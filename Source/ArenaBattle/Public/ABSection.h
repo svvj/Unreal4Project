@@ -25,5 +25,8 @@ public:
 
 private:
 	UPROPERTY(VisibleAnywhere, Category = Mesh, Meta = (AllowPrivateAccess = true))
+	TArray<UStaticMeshComponent*> GateMeshes;
+
+	UPROPERTY(VisibleAnywhere, Category = Mesh, Meta = (AllowPrivateAccess = true))
 	UStaticMeshComponent* Mesh;
 };
