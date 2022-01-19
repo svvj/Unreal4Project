@@ -198,7 +198,7 @@ void AABCharacter::Tick(float DeltaTime)
 	case EControlMode::DIABLO:
 		if (DirectionToMove.SizeSquared() > 0.0f)
 		{
-			// FRotationMatrix: ȸ���� ��ǥ�� ������ �����ϴ� ���
+			// FRotationMatrix: ȸ���� ��ǥ�� ������ �����ϴ� ���?
 			GetController()->SetControlRotation(FRotationMatrix::MakeFromX(DirectionToMove).Rotator());
 			AddMovementInput(DirectionToMove);
 		}
