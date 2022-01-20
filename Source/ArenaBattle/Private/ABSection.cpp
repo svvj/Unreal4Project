@@ -2,6 +2,8 @@
 
 
 #include "ABSection.h"
+#include "ABCharacter.h"
+#include "ABItemBox.h"
 
 // Sets default values
 AABSection::AABSection()
@@ -59,6 +61,9 @@ AABSection::AABSection()
 	}
 
 	bNoBattle = false;
+
+	EnemySpawnTime = 2.0f;
+	ItemBoxSpawnTime = 5.0f;
 }
 
 // Called when the game starts or when spawned
@@ -93,6 +98,13 @@ void AABSection::SetState(ESectionState NewState)
 		}
 
 		OperateGates(false);
+
+		GetWorld()->GetTimerManager().SetTimer(SpawnNPCTimerHandle, FTimerDelegate::CreateUObject(this, &AABSection::OnNPCSpawn), EnemySpawnTime, false);
+		GetWorld()->GetTimerManager().SetTimer(SpawnItemBoxTimerHandle, FTimerDelegate::CreateLambda([this]() -> void {
+			FVector2D RandXY = FMath::RandPointInCircle(600.0f);
+			GetWorld()->SpawnActor<AABItemBox>(GetActorLocation() + FVector(RandXY, 30.0f), FRotator::ZeroRotator);
+			}), ItemBoxSpawnTime, false);
+
 		break;
 	}
 	case ESectionState::COMPLETE:
@@ -125,8 +137,15 @@ void AABSection::OnConstruction(const FTransform& Transform)
 	SetState(bNoBattle ? ESectionState::COMPLETE : ESectionState::READY);
 }
 
-void AABSection::OnTriggerBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, 
-										int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+// Called every frame
+void AABSection::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
+
+}
+
+void AABSection::OnTriggerBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp,
+	int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 	if (CurrentState == ESectionState::READY)
 	{
@@ -135,7 +154,7 @@ void AABSection::OnTriggerBeginOverlap(UPrimitiveComponent* OverlappedComponent,
 }
 
 void AABSection::OnGateTriggerBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp,
-										int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+	int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 	ABCHECK(OverlappedComponent->ComponentTags.Num() == 1);
 	FName ComponentTag = OverlappedComponent->ComponentTags[0];
@@ -167,10 +186,8 @@ void AABSection::OnGateTriggerBeginOverlap(UPrimitiveComponent* OverlappedCompon
 	}
 }
 
-// Called every frame
-void AABSection::Tick(float DeltaTime)
+void AABSection::OnNPCSpawn()
 {
-	Super::Tick(DeltaTime);
-
+	GetWorld()->SpawnActor<AABCharacter>(GetActorLocation() + FVector::UpVector * 88.0f, FRotator::ZeroRotator);
 }
 
