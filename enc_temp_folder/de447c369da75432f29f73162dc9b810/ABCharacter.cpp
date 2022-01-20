@@ -98,8 +98,6 @@ AABCharacter::AABCharacter()
 	HPBarWidget->SetHiddenInGame(true);
 	// Can not access bCanBeDamaged = false; directly after 4.24
 	SetCanBeDamaged(false);
-
-	DeadTimer = 5.0f;
 }
 
 // Called when the game starts or when spawned
@@ -165,11 +163,6 @@ void AABCharacter::SetCharacterState(ECharacterState NewState)
 	{
 	case ECharacterState::LOADING:
 	{
-		if (bIsPlayer)
-		{
-			DisableInput(ABPlayerController);
-		}
-
 		SetActorHiddenInGame(true);
 		HPBarWidget->SetHiddenInGame(true);
 		SetCanBeDamaged(false);
@@ -188,19 +181,6 @@ void AABCharacter::SetCharacterState(ECharacterState NewState)
 		auto CharacterWidget = Cast<UABCharacterWidget>(HPBarWidget->GetUserWidgetObject());
 		ABCHECK(nullptr != CharacterWidget);
 		CharacterWidget->BindCharacterStat(CharacterStat);
-
-		if (bIsPlayer)
-		{
-			SetControlMode(EControlMode::DIABLO);
-			GetCharacterMovement()->MaxWalkSpeed = 600.0f;
-			EnableInput(ABPlayerController);
-		}
-		else
-		{
-			SetControlMode(EControlMode::NPC);
-			GetCharacterMovement()->MaxWalkSpeed = 400.0f;
-			ABAIController->RunAI();
-		}
 		break;
 	}
 	case ECharacterState::DEAD:
@@ -210,26 +190,6 @@ void AABCharacter::SetCharacterState(ECharacterState NewState)
 		HPBarWidget->SetHiddenInGame(true);
 		ABAnim->SetDeadAnim();
 		SetCanBeDamaged(false);
-
-		if (bIsPlayer)
-		{
-			DisableInput(ABPlayerController);
-		}
-		else
-		{
-			ABAIController->StopAI();
-		}
-
-		GetWorld()->GetTimerManager().SetTimer(DeadTimerHandle, FTimerDelegate::CreateLambda([this]() -> void {
-			if (bIsPlayer)
-			{
-				ABPlayerController->RestartLevel();
-			}
-			else
-			{
-				Destroy();
-			}
-			}), DeadTimer, false);
 
 		break;
 	}
