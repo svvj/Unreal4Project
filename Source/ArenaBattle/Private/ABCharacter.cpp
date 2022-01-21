@@ -12,6 +12,7 @@
 #include "ABCharacterSetting.h"
 #include "ABGameInstance.h"
 #include "ABPlayerController.h"
+#include "ABPlayerState.h"
 
 // Sets default values
 AABCharacter::AABCharacter()
@@ -168,6 +169,10 @@ void AABCharacter::SetCharacterState(ECharacterState NewState)
 		if (bIsPlayer)
 		{
 			DisableInput(ABPlayerController);
+
+			auto ABPlayerState = Cast<AABPlayerState>(GetPlayerState());
+			ABCHECK(nullptr != ABPlayerState);
+			CharacterStat->SetNewLevel(ABPlayerState->GetCharacterLevel());
 		}
 
 		SetActorHiddenInGame(true);
