@@ -24,7 +24,6 @@ public:
 
 protected:
 	virtual void BeginPlay() override;
-	//virtual void SetupInputComponent() override;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = UI)
 	TSubclassOf<class UABHUDWidget> HUDWidgetClass;

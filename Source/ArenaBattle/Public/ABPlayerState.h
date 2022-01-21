@@ -6,6 +6,8 @@
 #include "GameFramework/PlayerState.h"
 #include "ABPlayerState.generated.h"
 
+DECLARE_MULTICAST_DELEGATE(FOnPlayerStateChangedDelegate);
+
 /**
  * 
  */
@@ -21,6 +23,8 @@ public:
 	int32 GetCharacterLevel() const;
 
 	void InitPlayerData();
+
+	FOnPlayerStateChangedDelegate OnPlayerStateChanged;
 
 protected:
 	UPROPERTY(Transient)
