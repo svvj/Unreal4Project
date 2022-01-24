@@ -48,6 +48,11 @@ UABHUDWidget* AABPlayerController::GetHUDWidget() const
 	return HUDWidget;
 }
 
+void AABPlayerController::AddGameScore() const
+{
+	ABPlayerState->AddGameScore();
+}
+
 void AABPlayerController::NPCKill(AABCharacter* KilledNPC) const
 {
 	ABPlayerState->AddExp(KilledNPC->GetExp());
