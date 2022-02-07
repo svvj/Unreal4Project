@@ -20,8 +20,13 @@ public:
 public:
 	int32 GetTotalGameScore() const;
 	void AddGameScore();
+	void SetGameCleared();
+	bool IsGameCleared() const;
 
 private:
 	UPROPERTY(Transient)
 	int32 TotalGameScore;
+
+	UPROPERTY(Transient)
+	bool bGameCleared;
 };
