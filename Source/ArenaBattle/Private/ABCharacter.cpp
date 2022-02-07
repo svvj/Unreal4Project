@@ -14,7 +14,7 @@
 #include "ABPlayerController.h"
 #include "ABPlayerState.h"
 #include "ABHUDWidget.h"
-#include "ABGameMode.h""
+#include "ABGameMode.h"
 
 // Sets default values
 AABCharacter::AABCharacter()
@@ -126,7 +126,9 @@ void AABCharacter::BeginPlay()
 
 	if (bIsPlayer)
 	{
-		AssetIndex = 4;
+		auto ABPlayerState = Cast<AABPlayerState>(GetPlayerState());
+		ABCHECK(nullptr != ABPlayerState);
+		AssetIndex = ABPlayerState->GetCharacterIndex();
 	}
 	else
 	{
@@ -263,7 +265,7 @@ float AABCharacter::GetFinalAttackDamage() const
 {
 	float AttackDamage = (nullptr != CurrentWeapon) ? (CharacterStat->GetAttack() + CurrentWeapon->GetAttackDamage()) : CharacterStat->GetAttack();
 	float AttackModifier = (nullptr != CurrentWeapon) ? CurrentWeapon->GetAttackModifier() : 1.0f;
-
+	return AttackDamage * AttackModifier;
 }
 
 ECharacterState AABCharacter::GetCharacterState() const
